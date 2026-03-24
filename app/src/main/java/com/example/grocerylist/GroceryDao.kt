@@ -5,8 +5,8 @@ import androidx.room.*
 
 @Dao
 interface GroceryDao {
-    @Query("SELECT * FROM grocery_items ORDER BY isBought ASC, id DESC")
-    fun getAllItems(): LiveData<List<GroceryItem>>
+    @Query("SELECT * FROM grocery_items WHERE listId = :listId ORDER BY isBought ASC, id DESC")
+    fun getItemsByList(listId: Int): LiveData<List<GroceryItem>>
 
     @Insert
     suspend fun insert(item: GroceryItem)

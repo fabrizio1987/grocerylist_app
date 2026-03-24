@@ -5,6 +5,7 @@ import androidx.lifecycle.Observer
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.*
@@ -23,6 +24,7 @@ class GroceryDaoTest {
 
     private lateinit var db: GroceryDatabase
     private lateinit var dao: GroceryDao
+    private var testListId = 1
 
     @Before
     fun setup() {
@@ -31,6 +33,10 @@ class GroceryDaoTest {
             GroceryDatabase::class.java
         ).allowMainThreadQueries().build()
         dao = db.groceryDao()
+        val listDao = db.groceryListDao()
+        runBlocking {
+            testListId = listDao.insert(GroceryList(name = "Test")).toInt()
+        }
     }
 
     @After
@@ -40,42 +46,41 @@ class GroceryDaoTest {
 
     @Test
     fun insertItem_appearsInList() = runTest {
-        dao.insert(GroceryItem(name = "Milk"))
-        val items = dao.getAllItems().getOrAwait()
+        dao.insert(GroceryItem(listId = testListId, name = "Milk"))
+        val items = dao.getItemsByList(testListId).getOrAwait()
         assertEquals(1, items.size)
         assertEquals("Milk", items[0].name)
     }
 
     @Test
     fun deleteItem_removedFromList() = runTest {
-        dao.insert(GroceryItem(name = "Eggs"))
-        val inserted = dao.getAllItems().getOrAwait().first()
+        dao.insert(GroceryItem(listId = testListId, name = "Eggs"))
+        val inserted = dao.getItemsByList(testListId).getOrAwait().first()
         dao.delete(inserted)
-        val items = dao.getAllItems().getOrAwait()
+        val items = dao.getItemsByList(testListId).getOrAwait()
         assertTrue(items.isEmpty())
     }
 
     @Test
     fun updateItem_isBoughtChanges() = runTest {
-        dao.insert(GroceryItem(name = "Bread"))
-        val inserted = dao.getAllItems().getOrAwait().first()
+        dao.insert(GroceryItem(listId = testListId, name = "Bread"))
+        val inserted = dao.getItemsByList(testListId).getOrAwait().first()
         dao.update(inserted.copy(isBought = true))
-        val updated = dao.getAllItems().getOrAwait().first()
+        val updated = dao.getItemsByList(testListId).getOrAwait().first()
         assertTrue(updated.isBought)
     }
 
     @Test
     fun itemsOrdered_unboughtFirst() = runTest {
-        dao.insert(GroceryItem(name = "A"))
-        dao.insert(GroceryItem(name = "B"))
-        val all = dao.getAllItems().getOrAwait()
+        dao.insert(GroceryItem(listId = testListId, name = "A"))
+        dao.insert(GroceryItem(listId = testListId, name = "B"))
+        val all = dao.getItemsByList(testListId).getOrAwait()
         dao.update(all[0].copy(isBought = true))
-        val ordered = dao.getAllItems().getOrAwait()
+        val ordered = dao.getItemsByList(testListId).getOrAwait()
         assertFalse(ordered[0].isBought)
         assertTrue(ordered.last().isBought)
     }
 
-    // Helper: get LiveData value synchronously
     private fun <T> androidx.lifecycle.LiveData<T>.getOrAwait(): T {
         var value: T? = null
         val latch = CountDownLatch(1)

@@ -1,6 +1,16 @@
 <resources>
     <string name="app_name">Grocery List</string>
-    <string name="hint_item">Add an item…</string>
-    <string name="add">Add</string>
-    <string name="delete">Delete</string>
+    <string name="hint_item">Aggiungi un elemento…</string>
+    <string name="add">Aggiungi</string>
+    <string name="delete">Elimina</string>
+    <string name="hint_list_name">Nome lista…</string>
+    <string name="my_lists">Le mie liste</string>
+    <string name="action_theme">Tema</string>
+    <string name="action_translate">Traduci in inglese</string>
+    <string name="action_share">Condividi</string>
+    <string name="translating">Download modello…</string>
+    <string name="translation_failed">Traduzione non riuscita</string>
+    <string name="list_empty">La lista è vuota</string>
+    <string name="share_via">Condividi tramite</string>
+    <string name="drag_handle">Trascina per riordinare</string>
 </resources>

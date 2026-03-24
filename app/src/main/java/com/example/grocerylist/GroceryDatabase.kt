@@ -5,9 +5,10 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [GroceryItem::class], version = 1, exportSchema = false)
+@Database(entities = [GroceryItem::class, GroceryList::class], version = 3, exportSchema = false)
 abstract class GroceryDatabase : RoomDatabase() {
     abstract fun groceryDao(): GroceryDao
+    abstract fun groceryListDao(): GroceryListDao
 
     companion object {
         @Volatile
@@ -19,7 +20,10 @@ abstract class GroceryDatabase : RoomDatabase() {
                     context.applicationContext,
                     GroceryDatabase::class.java,
                     "grocery_database"
-                ).build().also { INSTANCE = it }
+                )
+                    .fallbackToDestructiveMigration(true)
+                    .build()
+                    .also { INSTANCE = it }
             }
     }
 }
