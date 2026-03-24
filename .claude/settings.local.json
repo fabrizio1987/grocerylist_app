@@ -4,7 +4,9 @@
       "Bash(mkdir -p \"D:/dev/AndroidProjects/testclaude1/gradle/wrapper\")",
       "Bash(mkdir -p \"D:/dev/AndroidProjects/testclaude1/app/src/main/java/com/example/grocerylist\")",
       "Bash(mkdir -p \"D:/dev/AndroidProjects/testclaude1/app/src/main/res/layout\")",
-      "Bash(mkdir -p \"D:/dev/AndroidProjects/testclaude1/app/src/main/res/values\")"
+      "Bash(mkdir -p \"D:/dev/AndroidProjects/testclaude1/app/src/main/res/values\")",
+      "WebSearch",
+      "WebFetch(domain:android-developers.googleblog.com)"
     ]
   }
 }
